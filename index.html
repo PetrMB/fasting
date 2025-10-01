@@ -74,7 +74,7 @@
             color: #93c5fd;
         }
 
-        .time-input {
+        .time-input, .goal-input {
             width: 100%;
             padding: 12px;
             background: #334155;
@@ -93,15 +93,16 @@
             border-radius: 10px;
             cursor: pointer;
             font-size: 1rem;
+            width: 100%;
         }
 
         .save-btn:hover {
             background: #1d4ed8;
         }
 
-        .start-time {
+        .start-time, .goal-display {
             color: #cbd5e1;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             font-size: 1.1rem;
         }
 
@@ -119,6 +120,21 @@
         .timer-label {
             text-align: center;
             color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        .remaining {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #34d399;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .remaining-label {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.9rem;
             margin-bottom: 30px;
         }
 
@@ -145,6 +161,34 @@
             height: 100%;
             background: linear-gradient(to right, #60a5fa, #34d399);
             transition: width 1s ease;
+        }
+
+        .quick-goals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .quick-goal-btn {
+            background: #334155;
+            border: 1px solid #475569;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .quick-goal-btn:hover {
+            background: #475569;
+            border-color: #60a5fa;
+        }
+
+        .quick-goal-btn.active {
+            background: #2563eb;
+            border-color: #60a5fa;
         }
 
         .phase-card {
@@ -285,8 +329,35 @@
             line-height: 1.6;
         }
 
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .success-title {
+            color: #34d399;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .success-content {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
         .hidden {
             display: none;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(71, 85, 105, 0.5);
+            margin: 25px 0;
         }
 
         @media (max-width: 640px) {
@@ -294,6 +365,7 @@
             .timer { font-size: 3rem; }
             .phase-name { font-size: 1.5rem; }
             .card { padding: 20px; }
+            .quick-goals { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -317,13 +389,41 @@
                 <button class="save-btn" id="saveBtn">Uložit</button>
             </div>
 
+            <div class="divider"></div>
+
+            <div class="time-header">
+                <span class="time-label">🎯 Cíl půstu</span>
+                <button class="edit-btn" id="editGoalBtn">Změnit</button>
+            </div>
+
+            <div id="viewGoalMode">
+                <div class="goal-display" id="goalDisplay"></div>
+            </div>
+
+            <div id="editGoalMode" class="hidden">
+                <div class="quick-goals">
+                    <button class="quick-goal-btn" data-hours="24">24h<br/>(1 den)</button>
+                    <button class="quick-goal-btn" data-hours="48">48h<br/>(2 dny)</button>
+                    <button class="quick-goal-btn" data-hours="72">72h<br/>(3 dny)</button>
+                    <button class="quick-goal-btn" data-hours="120">120h<br/>(5 dní)</button>
+                    <button class="quick-goal-btn" data-hours="144">144h<br/>(6 dní)</button>
+                    <button class="quick-goal-btn" data-hours="168">168h<br/>(7 dní)</button>
+                </div>
+                <input type="number" id="goalInput" class="goal-input" placeholder="Nebo zadej vlastní počet hodin" min="1">
+                <button class="save-btn" id="saveGoalBtn">Uložit cíl</button>
+            </div>
+
+            <div class="divider"></div>
+
             <div class="timer" id="timer">0h 0m</div>
             <div class="timer-label">celkem v půstu</div>
+
+            <div id="remainingSection"></div>
 
             <div class="progress-container">
                 <div class="progress-labels">
                     <span>0h</span>
-                    <span>120h (5 dní)</span>
+                    <span id="goalLabel">120h</span>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressBar" style="width: 0%"></div>
@@ -331,6 +431,7 @@
             </div>
         </div>
 
+        <div id="successCard"></div>
         <div id="currentPhaseCard"></div>
         <div id="nextPhaseCard"></div>
 
@@ -413,7 +514,21 @@
         ];
 
         let fastStart = localStorage.getItem('fastStart') || '2025-09-28T19:30';
+        let goalHours = parseInt(localStorage.getItem('goalHours')) || 120;
         let isEditing = false;
+        let isEditingGoal = false;
+
+        function formatHours(hours) {
+            if (hours < 24) {
+                return `${hours}h`;
+            }
+            const days = Math.floor(hours / 24);
+            const remainingHours = hours % 24;
+            if (remainingHours === 0) {
+                return `${days} ${days === 1 ? 'den' : days < 5 ? 'dny' : 'dní'}`;
+            }
+            return `${days}d ${remainingHours}h`;
+        }
 
         function updateDisplay() {
             const start = new Date(fastStart);
@@ -431,8 +546,37 @@
             document.getElementById('startTimeDisplay').textContent = 
                 start.toLocaleString('cs-CZ', { dateStyle: 'long', timeStyle: 'short' });
 
+            // Update goal display
+            document.getElementById('goalDisplay').textContent = `🎯 ${formatHours(goalHours)}`;
+            document.getElementById('goalLabel').textContent = formatHours(goalHours);
+
+            // Update remaining time
+            const remainingHours = Math.max(0, goalHours - hours);
+            const remainingMinutes = Math.max(0, (goalHours * 60) - (hours * 60 + minutes));
+            const displayRemHours = Math.floor(remainingMinutes / 60);
+            const displayRemMinutes = remainingMinutes % 60;
+
+            if (totalHours >= goalHours) {
+                document.getElementById('remainingSection').innerHTML = '';
+                document.getElementById('successCard').innerHTML = `
+                    <div class="success">
+                        <div class="success-title">🎉 Gratuluju! Dosáhl jsi svého cíle!</div>
+                        <div class="success-content">
+                            Držel jsi půst ${hours}h ${minutes}m a překonal cíl ${formatHours(goalHours)}!<br/>
+                            Skvělá práce! 💪
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('successCard').innerHTML = '';
+                document.getElementById('remainingSection').innerHTML = `
+                    <div class="remaining">${displayRemHours}h ${displayRemMinutes}m</div>
+                    <div class="remaining-label">zbývá do cíle</div>
+                `;
+            }
+
             // Update progress bar
-            const progress = Math.min((totalHours / 120) * 100, 100);
+            const progress = Math.min((totalHours / goalHours) * 100, 100);
             document.getElementById('progressBar').style.width = progress + '%';
 
             // Get current phase
@@ -530,7 +674,7 @@
             }
         }
 
-        // Edit functionality
+        // Edit time functionality
         document.getElementById('editBtn').addEventListener('click', () => {
             isEditing = !isEditing;
             if (isEditing) {
@@ -549,6 +693,53 @@
             isEditing = false;
             document.getElementById('viewMode').classList.remove('hidden');
             document.getElementById('editMode').classList.add('hidden');
+            updateDisplay();
+        });
+
+        // Edit goal functionality
+        document.getElementById('editGoalBtn').addEventListener('click', () => {
+            isEditingGoal = !isEditingGoal;
+            if (isEditingGoal) {
+                document.getElementById('viewGoalMode').classList.add('hidden');
+                document.getElementById('editGoalMode').classList.remove('hidden');
+                document.getElementById('goalInput').value = '';
+                
+                // Highlight current goal
+                document.querySelectorAll('.quick-goal-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (parseInt(btn.dataset.hours) === goalHours) {
+                        btn.classList.add('active');
+                    }
+                });
+            } else {
+                document.getElementById('viewGoalMode').classList.remove('hidden');
+                document.getElementById('editGoalMode').classList.add('hidden');
+            }
+        });
+
+        // Quick goal buttons
+        document.querySelectorAll('.quick-goal-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.quick-goal-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('goalInput').value = '';
+            });
+        });
+
+        document.getElementById('saveGoalBtn').addEventListener('click', () => {
+            const customGoal = document.getElementById('goalInput').value;
+            const activeBtn = document.querySelector('.quick-goal-btn.active');
+            
+            if (customGoal && customGoal > 0) {
+                goalHours = parseInt(customGoal);
+            } else if (activeBtn) {
+                goalHours = parseInt(activeBtn.dataset.hours);
+            }
+            
+            localStorage.setItem('goalHours', goalHours);
+            isEditingGoal = false;
+            document.getElementById('viewGoalMode').classList.remove('hidden');
+            document.getElementById('editGoalMode').classList.add('hidden');
             updateDisplay();
         });
 
