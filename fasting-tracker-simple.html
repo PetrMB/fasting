@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker Půstu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .time-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .time-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .edit-btn {
+            background: none;
+            border: none;
+            color: #60a5fa;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+        }
+
+        .edit-btn:hover {
+            color: #93c5fd;
+        }
+
+        .time-input {
+            width: 100%;
+            padding: 12px;
+            background: #334155;
+            border: 1px solid #475569;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .save-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .save-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .start-time {
+            color: #cbd5e1;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .timer-label {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        .progress-container {
+            margin-top: 30px;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #334155;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            transition: width 1s ease;
+        }
+
+        .phase-card {
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .phase-header {
+            margin-bottom: 20px;
+        }
+
+        .phase-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .phase-name {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .phase-range {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .phase-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .phase-section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .phase-section-content {
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .tip-list {
+            list-style: none;
+        }
+
+        .tip-list li {
+            margin-bottom: 8px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .tip-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .timeline {
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .timeline-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-name {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .timeline-range {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .timeline-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .badge-done {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .warning-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .warning-content {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            h1 { font-size: 2rem; }
+            .timer { font-size: 3rem; }
+            .phase-name { font-size: 1.5rem; }
+            .card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🕐 Tracker Půstu</h1>
+        <p class="subtitle">Sleduj svůj pokrok a co se děje v tvém těle</p>
+
+        <div class="card">
+            <div class="time-header">
+                <span class="time-label">⏰ Začátek půstu</span>
+                <button class="edit-btn" id="editBtn">Změnit</button>
+            </div>
+            
+            <div id="viewMode">
+                <div class="start-time" id="startTimeDisplay"></div>
+            </div>
+
+            <div id="editMode" class="hidden">
+                <input type="datetime-local" id="timeInput" class="time-input">
+                <button class="save-btn" id="saveBtn">Uložit</button>
+            </div>
+
+            <div class="timer" id="timer">0h 0m</div>
+            <div class="timer-label">celkem v půstu</div>
+
+            <div class="progress-container">
+                <div class="progress-labels">
+                    <span>0h</span>
+                    <span>120h (5 dní)</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="currentPhaseCard"></div>
+        <div id="nextPhaseCard"></div>
+
+        <div class="card">
+            <h3 style="margin-bottom: 25px; font-size: 1.3rem;">📍 Celá cesta</h3>
+            <div class="timeline" id="timeline"></div>
+        </div>
+
+        <div id="warningCard"></div>
+    </div>
+
+    <script>
+        const phases = [
+            {
+                name: 'Začátek',
+                range: '0-12h',
+                start: 0,
+                end: 12,
+                emoji: '🌅',
+                color: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
+                happening: 'Tělo čerpá energii z glukózy v krvi a postupně vyčerpává glykogen z jater a svalů.',
+                next: 'Glykogen se blíží k vyčerpání, tělo se připravuje na přechod k tukům.',
+                tips: ['Pij dostatek vody', 'Hlad je normální, brzy ustoupí']
+            },
+            {
+                name: 'Přechod',
+                range: '12-18h',
+                start: 12,
+                end: 18,
+                emoji: '🔄',
+                color: 'linear-gradient(135deg, #06b6d4, #14b8a6)',
+                happening: 'Glykogen téměř vyčerpán, játra začínají produkovat ketony. Hlad může být intenzivní.',
+                next: 'Vstup do ketózy, hlad začne ustupovat.',
+                tips: ['Můžeš cítit hlad a únavu', 'To je normální přechod', 'Začni pít slanou vodu']
+            },
+            {
+                name: 'Ketóza',
+                range: '18-24h',
+                start: 18,
+                end: 24,
+                emoji: '⚡',
+                color: 'linear-gradient(135deg, #14b8a6, #10b981)',
+                happening: 'Tělo přešlo na spalování tuků, ketony stoupají. Hlad ustupuje, může se objevit mentální jasnost.',
+                next: 'Hluboká ketóza, autophagie začíná.',
+                tips: ['Hlad by měl ustoupit', 'Mentální jasnost se zvyšuje', 'Sůl + hořčík důležité']
+            },
+            {
+                name: 'Autophagie',
+                range: '24-48h',
+                start: 24,
+                end: 48,
+                emoji: '🔬',
+                color: 'linear-gradient(135deg, #10b981, #059669)',
+                happening: 'Autophagie se rozběhla - tělo čistí poškozené buňky. Růstový hormon stoupá. Protizánětlivé účinky.',
+                next: 'Hluboká autophagie a maximální regenerace.',
+                tips: ['Elektrolyty jsou KLÍČOVÉ', 'Odpočívej, neber těžké věci', 'Lehký pohyb je OK']
+            },
+            {
+                name: 'Hluboká regenerace',
+                range: '48-72h',
+                start: 48,
+                end: 72,
+                emoji: '✨',
+                color: 'linear-gradient(135deg, #059669, #047857)',
+                happening: 'Maximum autophagie! Silné protizánětlivé účinky, imunitní systém se obnovuje. Hluboká ketóza.',
+                next: 'Pokračující regenerace, možná větší únava.',
+                tips: ['Sůl 1-2 lžičky denně!', 'Hořčík večer', 'Sleduj srdeční tep', 'Poslouchej tělo']
+            },
+            {
+                name: 'Prodloužený půst',
+                range: '72h+',
+                start: 72,
+                end: 999,
+                emoji: '🏔️',
+                color: 'linear-gradient(135deg, #047857, #65a30d)',
+                happening: 'Maximální terapeutické účinky. Tělo v hlubokém regeneračním režimu. Možná únava, ale silné hojivé procesy.',
+                next: 'Připravuj se na ukončení - refeed syndrom je riziko!',
+                tips: ['ELEKTROLYTY povinnost!', 'Sleduj varovné signály', 'Odpočívej', 'Ukončení bude postupné']
+            }
+        ];
+
+        let fastStart = localStorage.getItem('fastStart') || '2025-09-28T19:30';
+        let isEditing = false;
+
+        function updateDisplay() {
+            const start = new Date(fastStart);
+            const now = new Date();
+            const diff = now - start;
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const totalHours = hours + minutes / 60;
+
+            // Update timer
+            document.getElementById('timer').textContent = `${hours}h ${minutes}m`;
+
+            // Update start time display
+            document.getElementById('startTimeDisplay').textContent = 
+                start.toLocaleString('cs-CZ', { dateStyle: 'long', timeStyle: 'short' });
+
+            // Update progress bar
+            const progress = Math.min((totalHours / 120) * 100, 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // Get current phase
+            const currentPhase = phases.find(p => totalHours >= p.start && totalHours < p.end) || phases[phases.length - 1];
+            const currentIndex = phases.findIndex(p => p === currentPhase);
+            const nextPhase = currentIndex < phases.length - 1 ? phases[currentIndex + 1] : null;
+
+            // Update current phase card
+            document.getElementById('currentPhaseCard').innerHTML = `
+                <div class="phase-card" style="background: ${currentPhase.color}">
+                    <div class="phase-header">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">${currentPhase.emoji}</div>
+                        <div class="phase-label">Aktuální fáze</div>
+                        <div class="phase-name">${currentPhase.name}</div>
+                        <div class="phase-range">${currentPhase.range}</div>
+                    </div>
+                    
+                    <div class="phase-section">
+                        <div class="phase-section-title">🔬 Co se právě děje</div>
+                        <div class="phase-section-content">${currentPhase.happening}</div>
+                    </div>
+
+                    ${currentPhase.next ? `
+                        <div class="phase-section">
+                            <div class="phase-section-title">📈 Co tě čeká</div>
+                            <div class="phase-section-content">${currentPhase.next}</div>
+                        </div>
+                    ` : ''}
+
+                    <div class="phase-section">
+                        <div class="phase-section-title">💧 Doporučení</div>
+                        <ul class="tip-list">
+                            ${currentPhase.tips.map(tip => `<li>${tip}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            // Update next phase card
+            if (nextPhase) {
+                document.getElementById('nextPhaseCard').innerHTML = `
+                    <div class="card">
+                        <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">Další fáze</div>
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                            <div style="width: 48px; height: 48px; border-radius: 50%; background: ${nextPhase.color}; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                                ${nextPhase.emoji}
+                            </div>
+                            <div>
+                                <div style="font-size: 1.3rem; font-weight: bold;">${nextPhase.name}</div>
+                                <div style="color: #94a3b8; font-size: 0.9rem;">${nextPhase.range}</div>
+                            </div>
+                        </div>
+                        <div style="color: #cbd5e1; line-height: 1.6;">${nextPhase.happening}</div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('nextPhaseCard').innerHTML = '';
+            }
+
+            // Update timeline
+            const timelineHTML = phases.map(phase => {
+                const isActive = totalHours >= phase.start && totalHours < phase.end;
+                const isPast = totalHours >= phase.end;
+                const opacity = isActive ? '1' : isPast ? '0.9' : '0.4';
+
+                return `
+                    <div class="timeline-item" style="opacity: ${opacity}">
+                        <div class="timeline-icon" style="background: ${phase.color}; ${isActive ? 'box-shadow: 0 0 0 4px rgba(255,255,255,0.2)' : ''}">
+                            ${phase.emoji}
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-name">${phase.name}</div>
+                            <div class="timeline-range">${phase.range}</div>
+                        </div>
+                        ${isActive ? '<div class="timeline-badge badge-active">Teď</div>' : ''}
+                        ${isPast ? '<div class="timeline-badge badge-done">✓</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('timeline').innerHTML = timelineHTML;
+
+            // Update warning
+            if (totalHours >= 72) {
+                document.getElementById('warningCard').innerHTML = `
+                    <div class="warning">
+                        <div class="warning-title">⚠️ Prodloužený půst - pozor!</div>
+                        <div class="warning-content">
+                            Jsi v prodlouženém půstu. Elektrolyty jsou POVINNÉ! Sleduj varovné signály: 
+                            srdeční arytmie, silné závratě, mdloby. Při ukončení půstu jez postupně (refeed syndrom).
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('warningCard').innerHTML = '';
+            }
+        }
+
+        // Edit functionality
+        document.getElementById('editBtn').addEventListener('click', () => {
+            isEditing = !isEditing;
+            if (isEditing) {
+                document.getElementById('viewMode').classList.add('hidden');
+                document.getElementById('editMode').classList.remove('hidden');
+                document.getElementById('timeInput').value = fastStart;
+            } else {
+                document.getElementById('viewMode').classList.remove('hidden');
+                document.getElementById('editMode').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            fastStart = document.getElementById('timeInput').value;
+            localStorage.setItem('fastStart', fastStart);
+            isEditing = false;
+            document.getElementById('viewMode').classList.remove('hidden');
+            document.getElementById('editMode').classList.add('hidden');
+            updateDisplay();
+        });
+
+        // Update every second
+        updateDisplay();
+        setInterval(updateDisplay, 1000);
+    </script>
+</body>
+</html>
