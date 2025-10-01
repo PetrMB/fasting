@@ -12,231 +12,336 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: #1d1d1f;
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveGrid 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes moveGrid {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
             text-align: center;
             font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #60a5fa, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
             text-align: center;
-            color: #94a3b8;
+            color: rgba(255,255,255,0.85);
             margin-bottom: 40px;
+            font-weight: 500;
         }
 
-        .card {
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(71, 85, 105, 0.5);
-            border-radius: 20px;
-            padding: 30px;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 28px;
+            padding: 32px;
             margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                        0 2px 8px rgba(0, 0, 0, 0.05),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .time-header {
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15),
+                        0 4px 12px rgba(0, 0, 0, 0.08),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
 
-        .time-label {
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        .edit-btn {
-            background: none;
-            border: none;
-            color: #60a5fa;
-            cursor: pointer;
-            font-size: 0.9rem;
-            padding: 5px 10px;
-        }
-
-        .edit-btn:hover {
-            color: #93c5fd;
-        }
-
-        .time-input, .goal-input {
-            width: 100%;
-            padding: 12px;
-            background: #334155;
-            border: 1px solid #475569;
-            border-radius: 10px;
-            color: white;
-            font-size: 1rem;
-            margin-bottom: 10px;
-        }
-
-        .save-btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-        }
-
-        .save-btn:hover {
-            background: #1d4ed8;
-        }
-
-        .start-time, .goal-display {
-            color: #cbd5e1;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-
-        .timer {
-            text-align: center;
-            font-size: 4rem;
-            font-weight: bold;
-            background: linear-gradient(to right, #60a5fa, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-
-        .timer-label {
-            text-align: center;
-            color: #94a3b8;
-            margin-bottom: 30px;
-        }
-
-        .remaining {
-            text-align: center;
-            font-size: 1.5rem;
-            color: #34d399;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .remaining-label {
-            text-align: center;
-            color: #94a3b8;
-            font-size: 0.9rem;
-            margin-bottom: 30px;
-        }
-
-        .progress-container {
-            margin-top: 30px;
-        }
-
-        .progress-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: #94a3b8;
-            margin-bottom: 10px;
-        }
-
-        .progress-bar {
-            height: 12px;
-            background: #334155;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(to right, #60a5fa, #34d399);
-            transition: width 1s ease;
-        }
-
-        .quick-goals {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .quick-goal-btn {
-            background: #334155;
-            border: 1px solid #475569;
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-
-        .quick-goal-btn:hover {
-            background: #475569;
-            border-color: #60a5fa;
-        }
-
-        .quick-goal-btn.active {
-            background: #2563eb;
-            border-color: #60a5fa;
-        }
-
-        .phase-card {
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-        }
-
-        .phase-header {
-            margin-bottom: 20px;
-        }
-
-        .phase-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-bottom: 5px;
-        }
-
-        .phase-name {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .phase-range {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .phase-section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-        }
-
-        .phase-section-title {
-            font-weight: bold;
-            margin-bottom: 10px;
+        .section-label {
+            color: rgba(0, 0, 0, 0.7);
+            font-size: 0.95rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
+        .edit-btn {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #007AFF;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .edit-btn:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(1.05);
+        }
+
+        .edit-btn:active {
+            transform: scale(0.95);
+        }
+
+        .time-input, .goal-input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 14px;
+            color: #1d1d1f;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .time-input:focus, .goal-input:focus {
+            outline: none;
+            border-color: #007AFF;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.5);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+        .display-value {
+            color: rgba(0, 0, 0, 0.85);
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 4.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #007AFF 0%, #5856D6 50%, #AF52DE 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -2px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .timer-label {
+            text-align: center;
+            color: rgba(0, 0, 0, 0.6);
+            margin-bottom: 30px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .remaining {
+            text-align: center;
+            font-size: 2rem;
+            color: #34C759;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(52, 199, 89, 0.3);
+        }
+
+        .remaining-label {
+            text-align: center;
+            color: rgba(0, 0, 0, 0.6);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .progress-container {
+            margin-top: 32px;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: rgba(0, 0, 0, 0.6);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #007AFF 0%, #5856D6 50%, #AF52DE 100%);
+            transition: width 1s ease;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.4);
+        }
+
+        .quick-goals {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .quick-goal-btn {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: rgba(0, 0, 0, 0.85);
+            padding: 16px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .quick-goal-btn:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .quick-goal-btn.active {
+            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+            border-color: #007AFF;
+            color: white;
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.4);
+        }
+
+        .phase-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.2) 100%);
+            backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 28px;
+            padding: 32px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .phase-header {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .phase-emoji {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+        }
+
+        .phase-label {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .phase-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: rgba(0, 0, 0, 0.9);
+        }
+
+        .phase-range {
+            font-size: 0.95rem;
+            opacity: 0.7;
+            font-weight: 600;
+        }
+
+        .phase-section {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .phase-section-title {
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(0, 0, 0, 0.85);
+            font-size: 0.95rem;
+        }
+
         .phase-section-content {
             line-height: 1.6;
-            opacity: 0.95;
+            color: rgba(0, 0, 0, 0.75);
+            font-weight: 500;
         }
 
         .tip-list {
@@ -244,38 +349,49 @@
         }
 
         .tip-list li {
-            margin-bottom: 8px;
-            padding-left: 15px;
+            margin-bottom: 10px;
+            padding-left: 20px;
             position: relative;
+            line-height: 1.5;
+            color: rgba(0, 0, 0, 0.75);
+            font-weight: 500;
         }
 
         .tip-list li:before {
-            content: "•";
+            content: "●";
             position: absolute;
             left: 0;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .timeline {
-            margin-top: 20px;
+            color: #007AFF;
+            font-size: 0.8rem;
         }
 
         .timeline-item {
             display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 16px;
+            margin-bottom: 16px;
             align-items: center;
         }
 
         .timeline-icon {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-icon.active {
+            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.3),
+                        0 0 0 4px rgba(0, 122, 255, 0.1);
+            transform: scale(1.1);
         }
 
         .timeline-content {
@@ -283,71 +399,83 @@
         }
 
         .timeline-name {
-            font-weight: bold;
-            margin-bottom: 2px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: rgba(0, 0, 0, 0.85);
         }
 
         .timeline-range {
             font-size: 0.9rem;
-            color: #94a3b8;
+            color: rgba(0, 0, 0, 0.6);
+            font-weight: 500;
         }
 
         .timeline-badge {
-            padding: 5px 15px;
+            padding: 6px 16px;
             border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: bold;
+            font-size: 0.8rem;
+            font-weight: 700;
             white-space: nowrap;
         }
 
         .badge-active {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
+            background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
         }
 
         .badge-done {
-            background: rgba(16, 185, 129, 0.2);
-            color: #6ee7b7;
+            background: rgba(52, 199, 89, 0.2);
+            color: #34C759;
+            border: 1px solid rgba(52, 199, 89, 0.3);
         }
 
-        .warning {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 15px;
-            padding: 20px;
+        .alert-card {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(30px);
+            border: 2px solid rgba(255, 204, 0, 0.5);
+            border-radius: 20px;
+            padding: 24px;
             margin-top: 20px;
+            box-shadow: 0 8px 24px rgba(255, 204, 0, 0.2);
         }
 
-        .warning-title {
-            color: #fbbf24;
-            font-weight: bold;
-            margin-bottom: 10px;
+        .alert-title {
+            color: #FF9500;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
         }
 
-        .warning-content {
-            color: #cbd5e1;
+        .alert-content {
+            color: rgba(0, 0, 0, 0.75);
             line-height: 1.6;
+            font-weight: 500;
         }
 
-        .success {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 15px;
-            padding: 20px;
+        .success-card {
+            background: linear-gradient(135deg, rgba(52, 199, 89, 0.3) 0%, rgba(48, 209, 88, 0.2) 100%);
+            backdrop-filter: blur(30px);
+            border: 2px solid rgba(52, 199, 89, 0.5);
+            border-radius: 20px;
+            padding: 32px;
             margin-top: 20px;
             text-align: center;
+            box-shadow: 0 8px 32px rgba(52, 199, 89, 0.2);
         }
 
         .success-title {
-            color: #34d399;
-            font-weight: bold;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+            color: #34C759;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 10px rgba(52, 199, 89, 0.2);
         }
 
         .success-content {
-            color: #cbd5e1;
+            color: rgba(0, 0, 0, 0.75);
             line-height: 1.6;
+            font-weight: 600;
         }
 
         .hidden {
@@ -356,15 +484,15 @@
 
         .divider {
             height: 1px;
-            background: rgba(71, 85, 105, 0.5);
-            margin: 25px 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            margin: 28px 0;
         }
 
         @media (max-width: 640px) {
             h1 { font-size: 2rem; }
-            .timer { font-size: 3rem; }
-            .phase-name { font-size: 1.5rem; }
-            .card { padding: 20px; }
+            .timer { font-size: 3.5rem; }
+            .phase-name { font-size: 1.6rem; }
+            .glass-card { padding: 24px; }
             .quick-goals { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
@@ -374,14 +502,14 @@
         <h1>🕐 Tracker Půstu</h1>
         <p class="subtitle">Sleduj svůj pokrok a co se děje v tvém těle</p>
 
-        <div class="card">
-            <div class="time-header">
-                <span class="time-label">⏰ Začátek půstu</span>
+        <div class="glass-card">
+            <div class="section-header">
+                <span class="section-label">⏰ Začátek půstu</span>
                 <button class="edit-btn" id="editBtn">Změnit</button>
             </div>
             
             <div id="viewMode">
-                <div class="start-time" id="startTimeDisplay"></div>
+                <div class="display-value" id="startTimeDisplay"></div>
             </div>
 
             <div id="editMode" class="hidden">
@@ -391,13 +519,13 @@
 
             <div class="divider"></div>
 
-            <div class="time-header">
-                <span class="time-label">🎯 Cíl půstu</span>
+            <div class="section-header">
+                <span class="section-label">🎯 Cíl půstu</span>
                 <button class="edit-btn" id="editGoalBtn">Změnit</button>
             </div>
 
             <div id="viewGoalMode">
-                <div class="goal-display" id="goalDisplay"></div>
+                <div class="display-value" id="goalDisplay"></div>
             </div>
 
             <div id="editGoalMode" class="hidden">
@@ -435,9 +563,9 @@
         <div id="currentPhaseCard"></div>
         <div id="nextPhaseCard"></div>
 
-        <div class="card">
-            <h3 style="margin-bottom: 25px; font-size: 1.3rem;">📍 Celá cesta</h3>
-            <div class="timeline" id="timeline"></div>
+        <div class="glass-card">
+            <h3 style="margin-bottom: 28px; font-size: 1.3rem; font-weight: 700; color: rgba(0,0,0,0.85);">📍 Celá cesta</h3>
+            <div id="timeline"></div>
         </div>
 
         <div id="warningCard"></div>
@@ -451,7 +579,6 @@
                 start: 0,
                 end: 12,
                 emoji: '🌅',
-                color: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
                 happening: 'Tělo čerpá energii z glukózy v krvi a postupně vyčerpává glykogen z jater a svalů.',
                 next: 'Glykogen se blíží k vyčerpání, tělo se připravuje na přechod k tukům.',
                 tips: ['Pij dostatek vody', 'Hlad je normální, brzy ustoupí']
@@ -462,7 +589,6 @@
                 start: 12,
                 end: 18,
                 emoji: '🔄',
-                color: 'linear-gradient(135deg, #06b6d4, #14b8a6)',
                 happening: 'Glykogen téměř vyčerpán, játra začínají produkovat ketony. Hlad může být intenzivní.',
                 next: 'Vstup do ketózy, hlad začne ustupovat.',
                 tips: ['Můžeš cítit hlad a únavu', 'To je normální přechod', 'Začni pít slanou vodu']
@@ -473,7 +599,6 @@
                 start: 18,
                 end: 24,
                 emoji: '⚡',
-                color: 'linear-gradient(135deg, #14b8a6, #10b981)',
                 happening: 'Tělo přešlo na spalování tuků, ketony stoupají. Hlad ustupuje, může se objevit mentální jasnost.',
                 next: 'Hluboká ketóza, autophagie začíná.',
                 tips: ['Hlad by měl ustoupit', 'Mentální jasnost se zvyšuje', 'Sůl + hořčík důležité']
@@ -484,7 +609,6 @@
                 start: 24,
                 end: 48,
                 emoji: '🔬',
-                color: 'linear-gradient(135deg, #10b981, #059669)',
                 happening: 'Autophagie se rozběhla - tělo čistí poškozené buňky. Růstový hormon stoupá. Protizánětlivé účinky.',
                 next: 'Hluboká autophagie a maximální regenerace.',
                 tips: ['Elektrolyty jsou KLÍČOVÉ', 'Odpočívej, neber těžké věci', 'Lehký pohyb je OK']
@@ -495,7 +619,6 @@
                 start: 48,
                 end: 72,
                 emoji: '✨',
-                color: 'linear-gradient(135deg, #059669, #047857)',
                 happening: 'Maximum autophagie! Silné protizánětlivé účinky, imunitní systém se obnovuje. Hluboká ketóza.',
                 next: 'Pokračující regenerace, možná větší únava.',
                 tips: ['Sůl 1-2 lžičky denně!', 'Hořčík večer', 'Sleduj srdeční tep', 'Poslouchej tělo']
@@ -506,7 +629,6 @@
                 start: 72,
                 end: 999,
                 emoji: '🏔️',
-                color: 'linear-gradient(135deg, #047857, #65a30d)',
                 happening: 'Maximální terapeutické účinky. Tělo v hlubokém regeneračním režimu. Možná únava, ale silné hojivé procesy.',
                 next: 'Připravuj se na ukončení - refeed syndrom je riziko!',
                 tips: ['ELEKTROLYTY povinnost!', 'Sleduj varovné signály', 'Odpočívej', 'Ukončení bude postupné']
@@ -539,19 +661,12 @@
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const totalHours = hours + minutes / 60;
 
-            // Update timer
             document.getElementById('timer').textContent = `${hours}h ${minutes}m`;
-
-            // Update start time display
             document.getElementById('startTimeDisplay').textContent = 
                 start.toLocaleString('cs-CZ', { dateStyle: 'long', timeStyle: 'short' });
-
-            // Update goal display
-            document.getElementById('goalDisplay').textContent = `🎯 ${formatHours(goalHours)}`;
+            document.getElementById('goalDisplay').textContent = `${formatHours(goalHours)}`;
             document.getElementById('goalLabel').textContent = formatHours(goalHours);
 
-            // Update remaining time
-            const remainingHours = Math.max(0, goalHours - hours);
             const remainingMinutes = Math.max(0, (goalHours * 60) - (hours * 60 + minutes));
             const displayRemHours = Math.floor(remainingMinutes / 60);
             const displayRemMinutes = remainingMinutes % 60;
@@ -559,10 +674,10 @@
             if (totalHours >= goalHours) {
                 document.getElementById('remainingSection').innerHTML = '';
                 document.getElementById('successCard').innerHTML = `
-                    <div class="success">
-                        <div class="success-title">🎉 Gratuluju! Dosáhl jsi svého cíle!</div>
+                    <div class="success-card">
+                        <div class="success-title">🎉 Gratuluju!</div>
                         <div class="success-content">
-                            Držel jsi půst ${hours}h ${minutes}m a překonal cíl ${formatHours(goalHours)}!<br/>
+                            Dosáhl jsi svého cíle! Držel jsi půst ${hours}h ${minutes}m a překonal cíl ${formatHours(goalHours)}!<br/>
                             Skvělá práce! 💪
                         </div>
                     </div>
@@ -575,20 +690,17 @@
                 `;
             }
 
-            // Update progress bar
             const progress = Math.min((totalHours / goalHours) * 100, 100);
             document.getElementById('progressBar').style.width = progress + '%';
 
-            // Get current phase
             const currentPhase = phases.find(p => totalHours >= p.start && totalHours < p.end) || phases[phases.length - 1];
             const currentIndex = phases.findIndex(p => p === currentPhase);
             const nextPhase = currentIndex < phases.length - 1 ? phases[currentIndex + 1] : null;
 
-            // Update current phase card
             document.getElementById('currentPhaseCard').innerHTML = `
-                <div class="phase-card" style="background: ${currentPhase.color}">
+                <div class="phase-card">
                     <div class="phase-header">
-                        <div style="font-size: 3rem; margin-bottom: 10px;">${currentPhase.emoji}</div>
+                        <div class="phase-emoji">${currentPhase.emoji}</div>
                         <div class="phase-label">Aktuální fáze</div>
                         <div class="phase-name">${currentPhase.name}</div>
                         <div class="phase-range">${currentPhase.range}</div>
@@ -615,36 +727,34 @@
                 </div>
             `;
 
-            // Update next phase card
             if (nextPhase) {
                 document.getElementById('nextPhaseCard').innerHTML = `
-                    <div class="card">
-                        <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">Další fáze</div>
-                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                            <div style="width: 48px; height: 48px; border-radius: 50%; background: ${nextPhase.color}; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    <div class="glass-card">
+                        <div style="color: rgba(0,0,0,0.6); font-size: 0.9rem; margin-bottom: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Další fáze</div>
+                        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                            <div class="timeline-icon" style="width: 56px; height: 56px; font-size: 1.8rem;">
                                 ${nextPhase.emoji}
                             </div>
                             <div>
-                                <div style="font-size: 1.3rem; font-weight: bold;">${nextPhase.name}</div>
-                                <div style="color: #94a3b8; font-size: 0.9rem;">${nextPhase.range}</div>
+                                <div style="font-size: 1.4rem; font-weight: 700; color: rgba(0,0,0,0.85);">${nextPhase.name}</div>
+                                <div style="color: rgba(0,0,0,0.6); font-size: 0.95rem; font-weight: 600;">${nextPhase.range}</div>
                             </div>
                         </div>
-                        <div style="color: #cbd5e1; line-height: 1.6;">${nextPhase.happening}</div>
+                        <div style="color: rgba(0,0,0,0.75); line-height: 1.6; font-weight: 500;">${nextPhase.happening}</div>
                     </div>
                 `;
             } else {
                 document.getElementById('nextPhaseCard').innerHTML = '';
             }
 
-            // Update timeline
             const timelineHTML = phases.map(phase => {
                 const isActive = totalHours >= phase.start && totalHours < phase.end;
                 const isPast = totalHours >= phase.end;
-                const opacity = isActive ? '1' : isPast ? '0.9' : '0.4';
+                const opacity = isActive ? '1' : isPast ? '0.9' : '0.5';
 
                 return `
                     <div class="timeline-item" style="opacity: ${opacity}">
-                        <div class="timeline-icon" style="background: ${phase.color}; ${isActive ? 'box-shadow: 0 0 0 4px rgba(255,255,255,0.2)' : ''}">
+                        <div class="timeline-icon ${isActive ? 'active' : ''}">
                             ${phase.emoji}
                         </div>
                         <div class="timeline-content">
@@ -658,12 +768,11 @@
             }).join('');
             document.getElementById('timeline').innerHTML = timelineHTML;
 
-            // Update warning
             if (totalHours >= 72) {
                 document.getElementById('warningCard').innerHTML = `
-                    <div class="warning">
-                        <div class="warning-title">⚠️ Prodloužený půst - pozor!</div>
-                        <div class="warning-content">
+                    <div class="alert-card">
+                        <div class="alert-title">⚠️ Prodloužený půst - pozor!</div>
+                        <div class="alert-content">
                             Jsi v prodlouženém půstu. Elektrolyty jsou POVINNÉ! Sleduj varovné signály: 
                             srdeční arytmie, silné závratě, mdloby. Při ukončení půstu jez postupně (refeed syndrom).
                         </div>
@@ -674,7 +783,6 @@
             }
         }
 
-        // Edit time functionality
         document.getElementById('editBtn').addEventListener('click', () => {
             isEditing = !isEditing;
             if (isEditing) {
@@ -696,7 +804,6 @@
             updateDisplay();
         });
 
-        // Edit goal functionality
         document.getElementById('editGoalBtn').addEventListener('click', () => {
             isEditingGoal = !isEditingGoal;
             if (isEditingGoal) {
@@ -704,7 +811,6 @@
                 document.getElementById('editGoalMode').classList.remove('hidden');
                 document.getElementById('goalInput').value = '';
                 
-                // Highlight current goal
                 document.querySelectorAll('.quick-goal-btn').forEach(btn => {
                     btn.classList.remove('active');
                     if (parseInt(btn.dataset.hours) === goalHours) {
@@ -717,7 +823,6 @@
             }
         });
 
-        // Quick goal buttons
         document.querySelectorAll('.quick-goal-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.quick-goal-btn').forEach(b => b.classList.remove('active'));
@@ -743,7 +848,6 @@
             updateDisplay();
         });
 
-        // Update every second
         updateDisplay();
         setInterval(updateDisplay, 1000);
     </script>
